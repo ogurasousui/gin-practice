@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    container_name: gin
+    container_name: gin_app
     image: golang:1.12.0-alpine
     volumes:
       - .:/go/src/app
@@ -17,3 +17,14 @@ services:
       gin -i run"
     ports:
       - 3001:3001
+    links:
+      - db
+  db:
+    container_name: gin_db
+    image: mysql:8.0.15
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: gin_app
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    command: mysqld
