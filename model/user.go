@@ -7,4 +7,5 @@ import (
 
 type User struct {
 	gorm.Model
+	UserName UserName
 }
