@@ -14,9 +14,11 @@ func main() {
 			"message": "pong",
 		})
 	})
-	r.GET("/users", controller.List)
-	r.GET("/users/:id", controller.Get)
-	r.POST("/users", controller.Create)ｓｙ
+	r.GET("/users", controller.NewUser().List)
+	r.GET("/users/:id", controller.NewUser().Get)
+	r.POST("/users", controller.NewUser().Create)
+	r.PUT("/users/:id", controller.NewUser().Update)
+	r.DELETE("/users/:id", controller.NewUser().Delete)
 
 	r.Run()
 }

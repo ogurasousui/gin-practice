@@ -7,7 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Get(c *gin.Context) {
+type User struct{}
+
+func NewUser() *User {
+	return &User{}
+}
+
+func (t *User) Get(c *gin.Context) {
 	db := db.Connection()
 	defer db.Close()
 
@@ -16,7 +22,7 @@ func Get(c *gin.Context) {
 	c.JSON(200, result.Value)
 }
 
-func List(c *gin.Context) {
+func (t *User) List(c *gin.Context) {
 	db := db.Connection()
 	defer db.Close()
 
@@ -25,16 +31,45 @@ func List(c *gin.Context) {
 	c.JSON(200, result.Value)
 }
 
-func Create(c *gin.Context) {
+func (t *User) Create(c *gin.Context) {
 	db := db.Connection()
 	defer db.Close()
 
-	var user = model.User{}
+	var user model.User
 	db.Create(&user)
 
-	var userName = model.UserName{}
+	var userName model.UserName
 	c.BindJSON(&userName)
-
 	userName.UserID = user.ID
 	db.Create(&userName)
+}
+
+func (t *User) Update(c *gin.Context) {
+	db := db.Connection()
+	defer db.Close()
+
+	var user model.User
+	db.First(&user, c.Param("id")).Related(&user.UserName)
+	if user.UserName.ID > 0 {
+		c.BindJSON(&user.UserName)
+		db.Save(&user.UserName)
+	}
+}
+
+func (t *User) Delete(c *gin.Context) {
+	db := db.Connection()
+	defer db.Close()
+
+	var user model.User
+	db.First(&user, c.Param("id")).Related(&user.UserName)
+	if user.ID > 0 {
+		db.Delete(&user)
+	}
+	if user.UserName.ID > 0 {
+		db.Delete(&user.UserName)
+	}
+
+	// こっちの消し方でも良い
+	// db.Where("id = ?", c.Param("id")).Delete(&model.User{})
+	// db.Where("user_id = ?", c.Param("id")).Delete(&model.UserName{})
 }
