@@ -10,15 +10,14 @@ services:
       sh -c "cd /go/src/app &&
       apk update &&
       apk add --no-cache git &&
-      go get -u github.com/codegangsta/gin &&
-      go get -u github.com/golang/dep/cmd/dep &&
-      dep init ||
-      dep ensure &&
+      GO111MODULE=off go get -u github.com/codegangsta/gin &&
       gin -i run"
     ports:
       - 3001:3001
     links:
       - db
+    environment:
+      GO111MODULE: "on"
   db:
     container_name: gin_db
     image: mysql:8.0.15
