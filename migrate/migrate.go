@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	db := db.Connection()
-	defer db.Close()
+	db.Connection()
+	defer db.DB().Close()
 
-	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.UserName{})
+	db.DB().AutoMigrate(&model.User{})
+	db.DB().AutoMigrate(&model.UserName{})
 }

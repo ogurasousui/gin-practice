@@ -14,8 +14,7 @@ func NewUser() *User {
 }
 
 func (t *User) Get(c *gin.Context) {
-	db := db.Connection()
-	defer db.Close()
+	db := db.DB()
 
 	var user model.User
 	result := db.First(&user, c.Param("id")).Related(&user.UserName)
@@ -23,8 +22,7 @@ func (t *User) Get(c *gin.Context) {
 }
 
 func (t *User) List(c *gin.Context) {
-	db := db.Connection()
-	defer db.Close()
+	db := db.DB()
 
 	var users []model.User
 	result := db.Preload("UserName").Find(&users)
@@ -32,8 +30,7 @@ func (t *User) List(c *gin.Context) {
 }
 
 func (t *User) Create(c *gin.Context) {
-	db := db.Connection()
-	defer db.Close()
+	db := db.DB()
 
 	var user model.User
 	db.Create(&user)
@@ -45,8 +42,7 @@ func (t *User) Create(c *gin.Context) {
 }
 
 func (t *User) Update(c *gin.Context) {
-	db := db.Connection()
-	defer db.Close()
+	db := db.DB()
 
 	var user model.User
 	db.First(&user, c.Param("id")).Related(&user.UserName)
@@ -57,8 +53,7 @@ func (t *User) Update(c *gin.Context) {
 }
 
 func (t *User) Delete(c *gin.Context) {
-	db := db.Connection()
-	defer db.Close()
+	db := db.DB()
 
 	var user model.User
 	db.First(&user, c.Param("id")).Related(&user.UserName)
